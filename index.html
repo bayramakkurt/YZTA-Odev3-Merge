@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do App</title>
+    <style>
+        .markup{
+            text-align: center;
+            color: #333;
+            font-family: Arial, sans-serif;
+        }
+        .add-button{
+            background-color: green;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 20px; font-weight: bold;
+            height: 50px;
+            width: 100px;
+            
+        }
+        .clear-button{
+            background-color: red;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 20px; font-weight: bold;
+            height: 50px;
+            width: 100px;
+        }
+        .container{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .form-group{
+            display: flex;
+            flex-direction: row; /* Butonların ve input alanının yatay hizalanması için */
+            border: #333 1px solid;
+            margin-bottom: 10px;
+        }
+        .form-group input[type="text"] {
+            width: 600px; /* Genişliği ayarlamak için */
+        }
+        .clear-container {
+            width: 600px; /* input alanı ile aynı genişlikte */
+            display: flex;
+            justify-content: end; /* Butonun ortalanması için */
+            margin-top: 10px; /* Üst boşluk */
+            margin-left: 110px;
+        }
+        .list-group{
+            list-style: none;
+            padding: 0;
+            border: black 1px solid;
+            width: 50%;
+            padding: 20px;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="markup">To-Do List</h1>
+    <div class="container">
+        <form action="">
+            <div class="form-group">
+                <input type="text" placeholder="Add a new task" id="todos">
+                <button type="submit" class="add-button" id="add-todo">Add</button>
+            </div>
+        </form>
+        
+        <div class="clear-container">
+            <button type="reset" class="clear-button" onclick="clearTodos()">Clear</button>
+        </div>
+
+        <ul class="list-group" id="list-group">
+            <!-- <li style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; border-bottom: 1px solid #333;">
+                <span style="font-size: large; font-weight: bold;">To-Do Name</span>
+                <button style="font-size: 15px; font-weight: bold; background-color: transparent; border: none; color: red;">Delete</button>
+            </li> -->
+        </ul>
+    </div>
+
+    <script>
+        const textInput = document.getElementById("todos");
+        const addButton = document.querySelector("#add-todo");
+        const listGroup = document.querySelector("#list-group");
+        let textInputValue = "";
+        let todos = [];
+        textInput.addEventListener("keyup", function(event){
+            textInputValue = event.target.value;
+        });
+        addButton.addEventListener("click", addTodo);
+
+        function addTodo(event){
+            event.preventDefault();
+            todos.unshift({id: todos.length + 1, text: textInputValue});
+            document.getElementById("todos").value = "";
+            renderTodos();
+        }
+        function renderTodos(){
+            let result = "";
+            if(todos.length === 0){
+                listGroup.innerHTML = "<li style='display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; border-bottom: 1px solid #333;'>Empty Todos!</li>";
+                return;
+            }
+            todos.forEach((item) =>{
+                result += `<li style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; border-bottom: 1px solid #333;">
+                <span style="font-size: large; font-weight: bold;">${item.text}</span>
+                <button style="font-size: 15px; cursor: pointer; font-weight: bold; background-color: transparent; border: none; color: red;" onclick="deleteTodo(${item.id})">Delete</button>
+            </li>`;
+            })
+            listGroup.innerHTML = result;
+        }
+
+        function deleteTodo(id){
+            let deletedId;
+            for (let i = 0; i < todos.length; i++) {
+                if(todos[i].id === id){
+                    deletedId = i;
+                    break;
+                }
+            }
+            todos.splice(deletedId, 1);
+            renderTodos();
+        }
+
+        function clearTodos(){
+            todos = [];
+            renderTodos();
+        }
+        
+        renderTodos();
+    </script>
+    
+</body>
+</html>
